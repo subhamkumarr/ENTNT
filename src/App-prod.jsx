@@ -5,12 +5,12 @@ import { seedDatabase } from './utils/seedData'
 import Login from './pages/Login'
 import Layout from './components/Layout'
 import Jobs from './pages/Jobs-prod'
-import JobDetail from './pages/JobDetail'
+import JobDetail from './pages/JobDetail-prod'
 import Assessments from './pages/Assessments-prod'
 import Dashboard from './pages/Dashboard'
-import AppliedJobs from './pages/AppliedJobs'
-import AssessmentAttempt from './pages/AssessmentAttempt'
-import AssessmentSubmissions from './pages/AssessmentSubmissions'
+import AppliedJobs from './pages/AppliedJobs-prod'
+import AssessmentAttempt from './pages/AssessmentAttempt-prod'
+import AssessmentSubmissions from './pages/AssessmentSubmissions-prod'
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth()
@@ -105,7 +105,7 @@ function App() {
             <Route path="assessments/:jobId/attempt" element={<AssessmentAttempt />} />
             {/* Admin submissions route (supports job slug) */}
             <Route
-              path="assessments/:jobId/submissions"
+              path="assessments/:jobSlug/submissions"
               element={
                 <AdminRoute>
                   <AssessmentSubmissions />
