@@ -2,12 +2,16 @@ import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { dbHelpers } from '../services/db'
+import { MessageSquare, Eye, X } from 'lucide-react'
 
 export default function AppliedJobs() {
   const { user } = useAuth()
   const [applications, setApplications] = useState([])
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
+  const [selectedApplication, setSelectedApplication] = useState(null)
+  const [showNotes, setShowNotes] = useState(false)
+  const [notes, setNotes] = useState([])
 
   useEffect(() => {
     loadApplications()
@@ -34,14 +38,46 @@ export default function AppliedJobs() {
         })
       )
       
-      setApplications(applicationsWithJobs)
-    } catch (e) {
-      console.error('Failed to load applications:', e)
-      setApplications([])
-    } finally {
-      setLoading(false)
-    }
+    setApplications(applicationsWithJobs)
+  } catch (e) {
+    console.error('Failed to load applications:', e)
+    setApplications([])
+  } finally {
+    setLoading(false)
   }
+}
+
+const loadNotes = async (application) => {
+  try {
+    // Load notes for this application (mock data for now)
+    const mockNotes = [
+      {
+        id: 1,
+        content: 'Initial review completed. Candidate shows strong potential.',
+        author: 'HR Team',
+        timestamp: new Date().toISOString(),
+        mentions: []
+      },
+      {
+        id: 2,
+        content: 'Technical interview scheduled with @john.doe for next week.',
+        author: 'Recruiter',
+        timestamp: new Date(Date.now() - 86400000).toISOString(),
+        mentions: ['john.doe']
+      }
+    ]
+    setNotes(mockNotes)
+  } catch (e) {
+    console.error('Failed to load notes:', e)
+    setNotes([])
+  }
+}
+
+const openNotes = (application) => {
+  setSelectedApplication(application)
+  setShowNotes(true)
+  loadNotes(application)
+}
 
   const filteredApplications = applications.filter(app => {
     if (!search) return true
@@ -117,6 +153,13 @@ export default function AppliedJobs() {
                     </div>
                   </div>
                   <div className="flex items-center space-x-3">
+                    <button
+                      onClick={() => openNotes(app)}
+                      className="flex items-center space-x-1 px-3 py-2 bg-green-100 text-green-700 text-sm rounded-md hover:bg-green-200"
+                    >
+                      <MessageSquare size={16} />
+                      <span>Notes</span>
+                    </button>
                     {app.job && (
                       <Link
                         to={`/assessments/${app.job.id}/attempt`}
@@ -138,6 +181,59 @@ export default function AppliedJobs() {
           </div>
         )}
       </div>
+
+      {/* Notes Modal */}
+      {showNotes && selectedApplication && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[80vh] overflow-y-auto">
+            <div className="p-6 border-b border-gray-200">
+              <div className="flex items-center justify-between">
+                <h2 className="text-xl font-bold text-gray-900">Application Notes</h2>
+                <button
+                  onClick={() => setShowNotes(false)}
+                  className="text-gray-400 hover:text-gray-600"
+                >
+                  <X size={24} />
+                </button>
+              </div>
+              <p className="text-gray-600 mt-2">
+                {selectedApplication.job?.title || 'Unknown Job'} - {selectedApplication.name}
+              </p>
+            </div>
+            
+            <div className="p-6">
+              <div className="space-y-4">
+                {notes.map((note) => (
+                  <div key={note.id} className="border-l-4 border-blue-200 pl-4 py-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm font-medium text-gray-900">{note.author}</span>
+                      <span className="text-xs text-gray-500">
+                        {new Date(note.timestamp).toLocaleString()}
+                      </span>
+                    </div>
+                    <p className="text-sm text-gray-700 mt-1">{note.content}</p>
+                    {note.mentions.length > 0 && (
+                      <div className="mt-2 flex flex-wrap gap-1">
+                        {note.mentions.map((mention, i) => (
+                          <span
+                            key={i}
+                            className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded"
+                          >
+                            @{mention}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ))}
+                {notes.length === 0 && (
+                  <p className="text-gray-500 text-center py-8">No notes available for this application.</p>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

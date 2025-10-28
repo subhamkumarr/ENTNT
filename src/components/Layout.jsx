@@ -22,13 +22,12 @@ export default function Layout() {
     navigate('/login')
   }
 
-  // Admin sees: Dashboard, Jobs, Candidates, Assessments
+  // Admin sees: Dashboard, Jobs, Assessments
   // Candidate sees: Dashboard, Jobs (Applications)
   const navItems = isAdmin 
     ? [
         { path: '/', icon: LayoutDashboard, label: 'Dashboard' },
         { path: '/jobs', icon: Briefcase, label: 'Jobs' },
-        { path: '/candidates', icon: Users, label: 'Candidates' },
         { path: '/assessments', icon: FileText, label: 'Assessments' },
       ]
     : [
