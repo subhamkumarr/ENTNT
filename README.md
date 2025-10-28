@@ -188,12 +188,6 @@ npm run build
 npm run preview
 ```
 
-## Browser Compatibility
-
-- Chrome (recommended)
-- Firefox
-- Safari
-- Edge
 
 ## License
 

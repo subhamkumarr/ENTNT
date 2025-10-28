@@ -11,6 +11,8 @@ import Dashboard from './pages/Dashboard'
 import AppliedJobs from './pages/AppliedJobs-prod'
 import AssessmentAttempt from './pages/AssessmentAttempt-prod'
 import AssessmentSubmissions from './pages/AssessmentSubmissions-prod'
+import Candidates from './pages/Candidates-prod'
+import CandidateDetail from './pages/CandidateDetail-prod'
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth()
@@ -103,7 +105,23 @@ function App() {
             {/* Candidate routes */}
             <Route path="applied" element={<AppliedJobs />} />
             <Route path="assessments/:jobId/attempt" element={<AssessmentAttempt />} />
-            {/* Admin submissions route (supports job slug) */}
+            {/* Admin routes */}
+            <Route
+              path="candidates"
+              element={
+                <AdminRoute>
+                  <Candidates />
+                </AdminRoute>
+              }
+            />
+            <Route
+              path="candidates/:id"
+              element={
+                <AdminRoute>
+                  <CandidateDetail />
+                </AdminRoute>
+              }
+            />
             <Route
               path="assessments/:jobSlug/submissions"
               element={

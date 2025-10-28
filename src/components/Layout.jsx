@@ -28,6 +28,7 @@ export default function Layout() {
     ? [
         { path: '/', icon: LayoutDashboard, label: 'Dashboard' },
         { path: '/jobs', icon: Briefcase, label: 'Jobs' },
+        { path: '/candidates', icon: Users, label: 'Candidates' },
         { path: '/assessments', icon: FileText, label: 'Assessments' },
       ]
     : [
